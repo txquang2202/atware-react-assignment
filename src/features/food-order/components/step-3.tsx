@@ -117,6 +117,7 @@ const Step3: React.FC<Step3Props> = ({
                 }}
               />
             </div>
+            <button className='border! rounded-full! size-10 my-2! font-bold'>X</button>
           </div>
         ))}
 
