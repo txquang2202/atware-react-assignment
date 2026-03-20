@@ -46,7 +46,7 @@ const FoodOrder: React.FC = () => {
   };
 
   return (
-    <>
+    <div className="border max-w-4xl mx-auto shadow-lg rounded-xl">
       {step === 1 && (
         <Step1
           formData={formData}
@@ -73,7 +73,7 @@ const FoodOrder: React.FC = () => {
         />
       )}
       {step === 4 && <Step4 formData={formData} onBack={handleBack} />}
-    </>
+    </div>
   );
 };
 
