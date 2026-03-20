@@ -34,7 +34,7 @@ export const useValidateStep2 = () => {
 };
 
 export const useValidateStep3 = () => {
-  const validate: (formData: Pick<OrderData, "dishes">) => {
+  const validate: (formData: Pick<OrderData, "dishes" | "people">) => {
     valid: boolean;
     error: string;
   } = (data) => {
@@ -49,6 +49,13 @@ export const useValidateStep3 = () => {
 
     if (totalServings > 10) {
       return { valid: false, error: "Total servings cannot exceed 10." };
+    }
+
+    if (totalServings < data.people) {
+      return {
+        valid: false,
+        error: "Total servings cannot be less than the number of people.",
+      };
     }
 
     const dishSet = new Set(data.dishes.map((d) => d.name));

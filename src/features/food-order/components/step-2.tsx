@@ -57,6 +57,7 @@ const Step2: React.FC<Step2Props> = ({ restaurants }) => {
           onChange={(e) => {
             updateData({ restaurant: e.target.value });
             resetForm("restaurant");
+            setError("");
           }}
           style={{ width: "250px", padding: "5px", border: "2px solid black" }}
         >

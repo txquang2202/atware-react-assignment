@@ -91,9 +91,10 @@ const Step3: React.FC<Step3Props> = ({ availableDishes }) => {
               <p style={{ fontWeight: "bold" }}>Please Select a Dish</p>
               <select
                 value={item.name}
-                onChange={(e) =>
-                  handleUpdateDish(index, "name", e.target.value)
-                }
+                onChange={(e) => {
+                  handleUpdateDish(index, "name", e.target.value);
+                  setError("");
+                }}
                 style={{
                   width: "250px",
                   padding: "8px",
@@ -127,7 +128,9 @@ const Step3: React.FC<Step3Props> = ({ availableDishes }) => {
                 }}
               />
             </div>
-            <button className='border! rounded-full! size-10 my-2! font-bold'>X</button>
+            <button className="border! rounded-full! size-10 my-2! font-bold">
+              X
+            </button>
           </div>
         ))}
 

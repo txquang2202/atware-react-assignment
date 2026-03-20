@@ -53,6 +53,7 @@ const Step1: React.FC = () => {
           onChange={(e) => {
             updateData({ meal: e.target.value });
             resetForm("meal");
+            setError("");
           }}
           style={{ width: "150px", padding: "5px", border: "2px solid black" }}
         >
@@ -69,6 +70,7 @@ const Step1: React.FC = () => {
           value={formData.people}
           onChange={(e) => {
             updateData({ people: parseInt(e.target.value) || 1 });
+            setError("");
           }}
           min={1}
           max={10}
