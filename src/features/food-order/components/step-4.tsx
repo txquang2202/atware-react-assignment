@@ -1,16 +1,8 @@
 import React from "react";
+import { useOrder } from "../../../hooks/useOrder";
 
-interface Step4Props {
-  formData: {
-    meal: string;
-    people: number;
-    restaurant: string;
-    dishes: { name: string; servings: number }[];
-  };
-  onBack: () => void;
-}
-
-const Step4: React.FC<Step4Props> = ({ formData, onBack }) => {
+const Step4: React.FC = () => {
+  const { formData, prevStep } = useOrder();
   const handleSubmit = () => {
     console.log("Final Submission Data:", formData);
     alert("Check console for submitted data!");
@@ -70,7 +62,7 @@ const Step4: React.FC<Step4Props> = ({ formData, onBack }) => {
 
       <div style={{ display: "flex", gap: "400px", marginTop: "100px" }}>
         <button
-          onClick={onBack}
+          onClick={prevStep}
           style={{
             padding: "8px 20px",
             border: "2px solid black",

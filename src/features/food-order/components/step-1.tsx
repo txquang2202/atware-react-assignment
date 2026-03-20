@@ -1,15 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
+import { useOrder } from "../../../hooks/useOrder";
+import { useValidateStep1 } from "../../../hooks/useValidate";
 
-interface Step1Props {
-  formData: {
-    meal: string;
-    people: number;
+const Step1: React.FC = () => {
+  const { formData, updateData, nextStep, resetForm } = useOrder();
+  const { validate } = useValidateStep1();
+  const [error, setError] = useState("");
+
+  const handleNext = () => {
+    const validationError = validate(formData);
+    if (validationError.valid === false) {
+      setError(validationError.error);
+      return;
+    }
+    setError("");
+    nextStep();
   };
-  updateData: (data: Partial<{ meal: string; people: number }>) => void;
-  onNext: () => void;
-}
 
-const Step1: React.FC<Step1Props> = ({ formData, updateData, onNext }) => {
   return (
     <div
       style={{
@@ -43,7 +50,10 @@ const Step1: React.FC<Step1Props> = ({ formData, updateData, onNext }) => {
         <p>Please Select a meal</p>
         <select
           value={formData.meal}
-          onChange={(e) => updateData({ meal: e.target.value })}
+          onChange={(e) => {
+            updateData({ meal: e.target.value });
+            resetForm("meal");
+          }}
           style={{ width: "150px", padding: "5px", border: "2px solid black" }}
         >
           <option value="">---</option>
@@ -52,20 +62,20 @@ const Step1: React.FC<Step1Props> = ({ formData, updateData, onNext }) => {
           <option value="dinner">Dinner</option>
         </select>
       </div>
-
       <div>
         <p>Please Enter Number of people</p>
         <input
           type="number"
           value={formData.people}
-          onChange={(e) =>
-            updateData({ people: parseInt(e.target.value) || 1 })
-          }
+          onChange={(e) => {
+            updateData({ people: parseInt(e.target.value) || 1 });
+          }}
           min={1}
           max={10}
           style={{ width: "140px", padding: "5px", border: "2px solid black" }}
         />
       </div>
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div
         style={{
@@ -75,7 +85,7 @@ const Step1: React.FC<Step1Props> = ({ formData, updateData, onNext }) => {
         }}
       >
         <button
-          onClick={onNext}
+          onClick={handleNext}
           style={{
             padding: "5px 20px",
             backgroundColor: "white",

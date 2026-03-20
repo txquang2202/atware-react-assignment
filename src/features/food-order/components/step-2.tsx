@@ -1,23 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
+import { useOrder } from "../../../hooks/useOrder";
+import { useValidateStep2 } from "../../../hooks/useValidate";
 
 interface Step2Props {
-  formData: {
-    meal: string;
-    restaurant: string;
-  };
-  updateData: (data: Partial<{ restaurant: string }>) => void;
-  onNext: () => void;
-  onBack: () => void;
   restaurants: string[];
 }
 
-const Step2: React.FC<Step2Props> = ({
-  formData,
-  updateData,
-  onNext,
-  onBack,
-  restaurants,
-}) => {
+const Step2: React.FC<Step2Props> = ({ restaurants }) => {
+  const { formData, updateData, nextStep, prevStep, resetForm } = useOrder();
+  const { validate } = useValidateStep2();
+  const [error, setError] = useState("");
+
+  const handleNext = () => {
+    const validationError = validate(formData);
+    if (validationError.valid === false) {
+      setError(validationError.error);
+      return;
+    }
+    setError("");
+    nextStep();
+  };
+
   return (
     <div
       style={{
@@ -51,7 +54,10 @@ const Step2: React.FC<Step2Props> = ({
         <p>Please Select a Restaurant</p>
         <select
           value={formData.restaurant}
-          onChange={(e) => updateData({ restaurant: e.target.value })}
+          onChange={(e) => {
+            updateData({ restaurant: e.target.value });
+            resetForm("restaurant");
+          }}
           style={{ width: "250px", padding: "5px", border: "2px solid black" }}
         >
           <option value="">---</option>
@@ -62,6 +68,7 @@ const Step2: React.FC<Step2Props> = ({
           ))}
         </select>
       </div>
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div
         style={{
@@ -73,7 +80,7 @@ const Step2: React.FC<Step2Props> = ({
         }}
       >
         <button
-          onClick={onBack}
+          onClick={prevStep}
           style={{
             padding: "5px 20px",
             backgroundColor: "white",
@@ -86,7 +93,7 @@ const Step2: React.FC<Step2Props> = ({
         </button>
 
         <button
-          onClick={onNext}
+          onClick={handleNext}
           style={{
             padding: "5px 20px",
             backgroundColor: "white",

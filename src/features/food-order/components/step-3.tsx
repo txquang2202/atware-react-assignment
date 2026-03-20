@@ -1,26 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
+import { useOrder } from "../../../hooks/useOrder";
+import { useValidateStep3 } from "../../../hooks/useValidate";
 
-interface Dish {
+interface AvailableDish {
   id: number;
   name: string;
-  servings: number;
+  restaurant: string;
+  availableMeals: string[];
 }
-
 interface Step3Props {
-  formData: { dishes: Dish[] };
-  updateData: (data: { dishes: Dish[] }) => void;
-  onNext: () => void;
-  onBack: () => void;
-  availableDishes: any[];
+  availableDishes: AvailableDish[];
 }
 
-const Step3: React.FC<Step3Props> = ({
-  formData,
-  updateData,
-  onNext,
-  onBack,
-  availableDishes,
-}) => {
+const Step3: React.FC<Step3Props> = ({ availableDishes }) => {
+  const { formData, updateData, nextStep, prevStep } = useOrder();
   const handleAddDish = () => {
     const newDishes = [
       ...formData.dishes,
@@ -29,10 +22,27 @@ const Step3: React.FC<Step3Props> = ({
     updateData({ dishes: newDishes });
   };
 
-  const handleUpdateDish = (index: number, field: string, value: any) => {
+  const handleUpdateDish = (
+    index: number,
+    field: string,
+    value: string | number,
+  ) => {
     const updated = [...formData.dishes];
     updated[index] = { ...updated[index], [field]: value };
     updateData({ dishes: updated });
+  };
+
+  const { validate } = useValidateStep3();
+  const [error, setError] = useState("");
+
+  const handleNext = () => {
+    const validationError = validate(formData);
+    if (validationError.valid === false) {
+      setError(validationError.error);
+      return;
+    }
+    setError("");
+    nextStep();
   };
 
   return (
@@ -136,10 +146,11 @@ const Step3: React.FC<Step3Props> = ({
           +
         </button>
       </div>
+      {error && <p style={{ color: "red", marginTop: "20px" }}>{error}</p>}
 
       <div style={{ display: "flex", gap: "400px", marginTop: "100px" }}>
         <button
-          onClick={onBack}
+          onClick={prevStep}
           style={{
             padding: "8px 20px",
             border: "2px solid black",
@@ -150,7 +161,7 @@ const Step3: React.FC<Step3Props> = ({
           Previous
         </button>
         <button
-          onClick={onNext}
+          onClick={handleNext}
           style={{
             padding: "8px 25px",
             border: "2px solid black",

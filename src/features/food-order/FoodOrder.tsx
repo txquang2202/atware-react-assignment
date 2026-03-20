@@ -1,25 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import dishData from "../../data/dishes.json";
+import { useOrder } from "../../hooks/useOrder";
 import Step1 from "./components/step-1";
 import Step2 from "./components/step-2";
 import Step3 from "./components/step-3";
 import Step4 from "./components/step-4";
 
-interface OrderData {
-  meal: string;
-  people: number;
-  restaurant: string;
-  dishes: { id: number; name: string; servings: number }[];
-}
-
 const FoodOrder: React.FC = () => {
-  const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState<OrderData>({
-    meal: "",
-    people: 1,
-    restaurant: "",
-    dishes: [],
-  });
+  const { step, formData } = useOrder();
 
   const filteredRestaurants = Array.from(
     new Set(
@@ -33,46 +21,25 @@ const FoodOrder: React.FC = () => {
     (d) => d.restaurant === formData.restaurant,
   );
 
-  const updateData = (newData: Partial<OrderData>) => {
-    setFormData((prev) => ({ ...prev, ...newData }));
-  };
+  // const updateData = (newData: Partial<OrderData>) => {
+  //   setFormData((prev) => ({ ...prev, ...newData }));
+  // };
 
-  const handleNext = () => {
-    setStep((prev) => prev + 1);
-  };
+  // const handleNext = () => {
+  //   setStep((prev) => prev + 1);
+  // };
 
-  const handleBack = () => {
-    setStep((prev) => prev - 1);
-  };
+  // const handleBack = () => {
+  //   setStep((prev) => prev - 1);
+  // };
 
   return (
     <div className="border max-w-4xl mx-auto shadow-lg rounded-xl">
-      {step === 1 && (
-        <Step1
-          formData={formData}
-          updateData={updateData}
-          onNext={handleNext}
-        />
-      )}
-      {step === 2 && (
-        <Step2
-          formData={formData}
-          updateData={updateData}
-          onNext={handleNext}
-          onBack={handleBack}
-          restaurants={filteredRestaurants}
-        />
-      )}
-      {step === 3 && (
-        <Step3
-          formData={formData}
-          updateData={updateData}
-          onNext={handleNext}
-          onBack={handleBack}
-          availableDishes={filteredDishes}
-        />
-      )}
-      {step === 4 && <Step4 formData={formData} onBack={handleBack} />}
+      {step === 1 && <Step1 />}
+
+      {step === 2 && <Step2 restaurants={filteredRestaurants} />}
+      {step === 3 && <Step3 availableDishes={filteredDishes} />}
+      {step === 4 && <Step4 />}
     </div>
   );
 };
